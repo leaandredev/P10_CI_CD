@@ -5,32 +5,35 @@ name: Angular Test
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [18.x, 20.x, 22.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
-
     steps:
-    - uses: actions/checkout@v4
-    
-    - name: Setup Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
-    - name: Install dependencies
-      run: npm ci
-      working-directory: front
+      - uses: actions/checkout@v4
 
-    - name: Install dependencies
-      run: npm test
-      working-directory: front
+      - name: Setup Node.js 18
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: "npm"
+      - name: Install dependencies
+        run: npm ci
+        working-directory: front
+
+      - name: Install dependencies
+        run: npm test --no-watch --no-progress --browsers=ChromeHeadless
+        working-directory: front
+
+      - name: Generate Test Report
+        uses: phoenix-actions/test-reporting@v8
+        id: test-report-frontend
+        if: success() || failure()
+        with:
+          name: Angular Tests
+          path: front/coverage/**/test-results.xml
+          reporter: junit
