@@ -40,5 +40,5 @@ jobs:
         if: success() || failure()
         with:
           name: Angular Tests
-          path: front/coverage/test-results.xml
+          path: front/coverage/**/cobertura-coverage.xml
           reporter: jest-junit
