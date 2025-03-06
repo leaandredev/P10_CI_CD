@@ -28,7 +28,7 @@ jobs:
         working-directory: front
 
       - name: Run Angular Tests (Jasmine/Karma)
-        run: npm test --browsers=ChromeHeadless --progress=false --watch=false --code-coverage --source-map=false
+        run: npm run test-coverage
         working-directory: front
 
       - name: Generate Test Report
