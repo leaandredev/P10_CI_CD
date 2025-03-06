@@ -26,5 +26,23 @@ jobs:
           java-version: "11"
           distribution: "temurin"
           cache: maven
-      - name: Test with Maven
+      - name: Run tests with Maven
         run: mvn -B test --file back/pom.xml
+
+      - name: Generate Jacoco test report
+        run: mvn surefire-report:report-only
+
+      - name: Upload backend test report
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-test-report
+          path: back/target/site/jacoco
+      
+      - name: Test Report Backend
+        uses: phoenix-actions/test-reporting@v8
+        id: test-report-backend
+        if: success() || failure()
+        with:
+          name: Backend Tests
+          path: back/target/surefire-reports/*.xml
+          reporter: java-junit
