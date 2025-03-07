@@ -47,6 +47,15 @@ jobs:
           path: front/coverage/test-results.xml
           reporter: java-junit
 
+      - name: Save Frontend Test Report Output
+        run: echo "${{ steps.test-report-frontend.outputs.report }}" > frontend-test-report.md
+
+      - name: Upload Frontend Test Report Output
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-test-report
+          path: frontend-test-report.md
+
       - name: Code Coverage Summary Report
         uses: irongut/CodeCoverageSummary@v1.3.0
         id: coverage-report-frontend
@@ -59,6 +68,16 @@ jobs:
           indicators: true
           output: both
           thresholds: "60 80"
+
+      - name: Save Frontend Coverage Output
+        run: echo "${{ steps.coverage-report-frontend.outputs.markdown }}" > frontend-coverage.md
+
+      - name: Upload Frontend Coverage Output
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-coverage
+          path: frontend-coverage.md
+
   backend-tests:
     runs-on: ubuntu-latest
     name: Backend Tests (Maven with Jacoco)
@@ -94,6 +113,15 @@ jobs:
           path: back/target/surefire-reports/*.xml
           reporter: java-junit
 
+      - name: Save Backend Test Report Output
+        run: echo "${{ steps.test-report-backend.outputs.report }}" > backend-test-report.md
+
+      - name: Upload Backend Test Report Output
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-test-report
+          path: backend-test-report.md
+
       - name: JaCoCo Code Coverage Report
         id: coverage-report-backend
         uses: PavanMudigonda/jacoco-reporter@v5.0
@@ -106,10 +134,56 @@ jobs:
           minimum_coverage: 80
           fail_below_threshold: false
           publish_only_summary: false
+
+      - name: Save Backend Coverage Output
+        run: echo "${{ steps.coverage-report-backend.outputs.markdown }}" > backend-coverage.md
+
+      - name: Upload Backend Coverage Output
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-coverage
+          path: backend-coverage.md
+
   post-comment:
     runs-on: ubuntu-latest
     needs: [frontend-tests, backend-tests]
     steps:
+      - name: Download Coverage Outputs
+        uses: actions/download-artifact@v4
+        with:
+          name: frontend-coverage
+          path: .
+
+      - name: Download Backend Coverage Outputs
+        uses: actions/download-artifact@v4
+        with:
+          name: backend-coverage
+          path: .
+
+      - name: Read coverage outputs
+        id: read-coverage
+        run: |
+          echo "frontend=$(cat frontend-coverage.md)" >> $GITHUB_ENV
+          echo "backend=$(cat backend-coverage.md)" >> $GITHUB_ENV
+
+      - name: Download Test Reports Outputs
+        uses: actions/download-artifact@v4
+        with:
+          name: frontend-test-report
+          path: .
+
+      - name: Download Backend Test Reports Outputs
+        uses: actions/download-artifact@v4
+        with:
+          name: backend-test-report
+          path: .
+
+      - name: Read test reports outputs
+        id: read-test-reports
+        run: |
+          echo "frontend_test_report=$(cat frontend-test-report.md)" >> $GITHUB_ENV
+          echo "backend_test_report=$(cat backend-test-report.md)" >> $GITHUB_ENV
+
       - name: Create PR Comment
         uses: marocchino/sticky-pull-request-comment@v2
         if: github.event_name == 'pull_request'
@@ -118,9 +192,9 @@ jobs:
           message: |
             ## 🛠 Test Results & Coverage
             ### 📊 Coverage
-            - **Frontend:** ${{ steps.coverage-report-frontend.outputs.markdown }}
-            - **Backend:** ${{ steps.coverage-report-backend.outputs.markdown }}
+            - **Frontend:** ${{ env.frontend }}
+            - **Backend:** ${{ env.backend }}
 
             ### ✅ Test Reports
-            - **Frontend:** ${{ steps.test-report-frontend.outputs.report }}
-            - **Backend:** ${{ steps.test-report-backend.outputs.report }}
+            - **Frontend:** ${{ env.frontend_test_report }}
+            - **Backend:** ${{ env.backend_test_report }}
