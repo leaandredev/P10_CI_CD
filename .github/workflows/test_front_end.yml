@@ -1,36 +1,241 @@
 # This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
 
-name: Angular Test
+name: Backend and Frontend Tests
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
-  build:
-
+  frontend-tests:
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [18.x, 20.x, 22.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+    name: Frontend Tests (Angular with Jasmine/Karma)
 
     steps:
-    - uses: actions/checkout@v4
-    
-    - name: Setup Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
-    - name: Install dependencies
-      run: npm ci
-      working-directory: front
+      - uses: actions/checkout@v4
 
-    - name: Install dependencies
-      run: npm test
-      working-directory: front
+      - name: Setup Node.js 18
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: "npm"
+          cache-dependency-path: front/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+        working-directory: front
+
+      - name: Run Angular Tests (Jasmine/Karma)
+        run: npm run test-coverage
+        working-directory: front
+
+      - name: Generate Test Report
+        uses: phoenix-actions/test-reporting@v8
+        id: test-report-frontend
+        if: success() || failure()
+        with:
+          name: Angular Tests
+          path: front/coverage/test-results.xml
+          reporter: java-junit
+
+      - name: Display test-report-frontend results
+        run: echo "${{ steps.test-report-frontend.outputs }}"
+
+      - name: Display test-report-backend results
+        run: echo "${{ steps.test-report-frontend.outputs.output }}"
+      - name: Display test-report-backend results
+        run: echo "${{ steps.test-report-frontend.outputs.report }}"
+      - name: Display test-report-backend results
+        run: echo "${{ steps.test-report-frontend.outputs.conclusion }}"
+      - name: Display test-report-backend results
+        run: echo "${{ steps.test-report-frontend.outputs.markdown }}"
+      - name: Display test-report-backend results
+        run: echo "${{ steps.test-report-frontend.outputs.result }}"
+
+      # - name: Save Frontend Test Report Output
+      #   run: echo "${{ steps.test-report-frontend.outputs.report }}" > frontend-test-report.md
+
+      # - name: Upload Frontend Test Report Output
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: frontend-test-report
+      #     path: frontend-test-report.md
+
+      - name: Code Coverage Summary Report
+        uses: irongut/CodeCoverageSummary@v1.3.0
+        id: coverage-report-frontend
+        with:
+          filename: front/coverage/**/cobertura-coverage.xml
+          badge: true,
+          format: markdown
+          hide_branch_rate: false
+          hide_complexity: true
+          indicators: true
+          output: both
+          thresholds: "60 80"
+
+      - name: Display coverage-report-frontend results
+        run: echo "${{ steps.coverage-report-frontend.outputs }}"
+
+      - name: Display test-report-backend results
+        run: echo "${{ steps.coverage-report-frontend.outputs.output }}"
+      - name: Display test-report-backend results
+        run: echo "${{ steps.coverage-report-frontend.outputs.report }}"
+      - name: Display test-report-backend results
+        run: echo "${{ steps.coverage-report-frontend.outputs.conclusion }}"
+      - name: Display test-report-backend results
+        run: echo "${{ steps.coverage-report-frontend.outputs.markdown }}"
+      - name: Display test-report-backend results
+        run: echo "${{ steps.coverage-report-frontend.outputs.result }}"
+
+      # - name: Save Frontend Coverage Output
+      #   run: echo "${{ steps.coverage-report-frontend.outputs.markdown }}" > frontend-coverage.md
+
+      # - name: Upload Frontend Coverage Output
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: frontend-coverage
+      #     path: frontend-coverage.md
+
+  backend-tests:
+    runs-on: ubuntu-latest
+    name: Backend Tests (Maven with Jacoco)
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v4
+        with:
+          java-version: "11"
+          distribution: "temurin"
+          cache: maven
+
+      - name: Run tests with Maven
+        run: mvn -B test --file back/pom.xml
+
+      - name: Generate Jacoco test report
+        run: mvn jacoco:report --file back/pom.xml
+
+      - name: Test Report Backend
+        uses: phoenix-actions/test-reporting@v8
+        id: test-report-backend
+        if: success() || failure()
+        with:
+          name: Backend Tests
+          path: back/target/surefire-reports/*.xml
+          reporter: java-junit
+
+      - name: Display test-report-backend results
+        run: echo "${{ steps.test-report-backend.outputs.output }}"
+      - name: Display test-report-backend results
+        run: echo "${{ steps.test-report-backend.outputs.report }}"
+      - name: Display test-report-backend results
+        run: echo "${{ steps.test-report-backend.outputs.conclusion }}"
+      - name: Display test-report-backend results
+        run: echo "${{ steps.test-report-backend.outputs.markdown }}"
+      - name: Display test-report-backend results
+        run: echo "${{ steps.test-report-backend.outputs.result }}"
+
+      # - name: Save Backend Test Report Output
+      #   run: echo "${{ steps.test-report-backend.outputs.report }}" > backend-test-report.md
+
+      # - name: Upload Backend Test Report Output
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: backend-test-report
+      #     path: backend-test-report.md
+
+      - name: JaCoCo Code Coverage Report
+        id: coverage-report-backend
+        uses: PavanMudigonda/jacoco-reporter@v5.0
+        with:
+          coverage_results_path: back/target/site/jacoco/jacoco.xml
+          coverage_report_name: Coverage
+          coverage_report_title: JaCoCo
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          skip_check_run: false
+          minimum_coverage: 80
+          fail_below_threshold: false
+          publish_only_summary: false
+
+      - name: Display coverage-report-backend results
+        run: echo "${{ steps.coverage-report-backend.outputs }}"
+
+      - name: Display test-report-backend results
+        run: echo "${{ steps.coverage-report-backend.outputs.output }}"
+      - name: Display test-report-backend results
+        run: echo "${{ steps.coverage-report-backend.outputs.report }}"
+      - name: Display test-report-backend results
+        run: echo "${{ steps.coverage-report-backend.outputs.conclusion }}"
+      - name: Display test-report-backend results
+        run: echo "${{ steps.coverage-report-backend.outputs.markdown }}"
+      - name: Display test-report-backend results
+        run: echo "${{ steps.coverage-report-backend.outputs.result }}"
+
+      # - name: Save Backend Coverage Output
+      #   run: echo "${{ steps.coverage-report-backend.outputs.markdown }}" > backend-coverage.md
+
+      # - name: Upload Backend Coverage Output
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: backend-coverage
+      #     path: backend-coverage.md
+
+  # post-comment:
+  #   runs-on: ubuntu-latest
+  #   needs: [frontend-tests, backend-tests]
+  #   steps:
+  #     - name: Download Coverage Outputs
+  #       uses: actions/download-artifact@v4
+  #       with:
+  #         name: frontend-coverage
+  #         path: .
+
+  #     - name: Download Backend Coverage Outputs
+  #       uses: actions/download-artifact@v4
+  #       with:
+  #         name: backend-coverage
+  #         path: .
+
+  #     - name: Read coverage outputs
+  #       id: read-coverage
+  #       run: |
+  #         echo "frontend=$(cat frontend-coverage.md)" >> $GITHUB_ENV
+  #         echo "backend=$(cat backend-coverage.md)" >> $GITHUB_ENV
+
+  #     - name: Download Test Reports Outputs
+  #       uses: actions/download-artifact@v4
+  #       with:
+  #         name: frontend-test-report
+  #         path: .
+
+  #     - name: Download Backend Test Reports Outputs
+  #       uses: actions/download-artifact@v4
+  #       with:
+  #         name: backend-test-report
+  #         path: .
+
+  #     - name: Read test reports outputs
+  #       id: read-test-reports
+  #       run: |
+  #         echo "frontend_test_report=$(cat frontend-test-report.md)" >> $GITHUB_ENV
+  #         echo "backend_test_report=$(cat backend-test-report.md)" >> $GITHUB_ENV
+
+  #     - name: Create PR Comment
+  #       uses: marocchino/sticky-pull-request-comment@v2
+  #       if: github.event_name == 'pull_request'
+  #       with:
+  #         recreate: true
+  #         message: |
+  #           ## 🛠 Test Results & Coverage
+  #           ### 📊 Coverage
+  #           - **Frontend:** ${{ env.frontend }}
+  #           - **Backend:** ${{ env.backend }}
+
+  #           ### ✅ Test Reports
+  #           - **Frontend:** ${{ env.frontend_test_report }}
+  #           - **Backend:** ${{ env.backend_test_report }}
