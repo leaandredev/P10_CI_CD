@@ -98,12 +98,6 @@ jobs:
       - name: Generate Jacoco test report
         run: mvn jacoco:report --file back/pom.xml
 
-      - name: Upload backend test report
-        uses: actions/upload-artifact@v4
-        with:
-          name: backend-test-report
-          path: back/target/site/jacoco
-
       - name: Test Report Backend
         uses: phoenix-actions/test-reporting@v8
         id: test-report-backend
