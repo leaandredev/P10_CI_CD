@@ -93,23 +93,19 @@ jobs:
           name: Backend Tests
           path: back/target/surefire-reports/*.xml
           reporter: java-junit
-      - name: Convert Jacoco to Cobertura
-        run: |
-          pip install jacoco2cobertura
-          jacoco2cobertura back/target/site/jacoco/jacoco.xml --output back/target/site/jacoco/cobertura.xml
 
-      - name: Code Coverage Summary Report
-        uses: irongut/CodeCoverageSummary@v1.3.0
+      - name: JaCoCo Code Coverage Report
         id: coverage-report-backend
+        uses: PavanMudigonda/jacoco-reporter@v5.0
         with:
-          filename: back/target/site/jacoco/cobertura.xml
-          badge: true
-          format: markdown
-          hide_branch_rate: false
-          hide_complexity: true
-          indicators: true
-          output: both
-          thresholds: "60 80"
+          coverage_results_path: jacoco-report/test.xml
+          coverage_report_name: Coverage
+          coverage_report_title: JaCoCo
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          skip_check_run: false
+          minimum_coverage: 80
+          fail_below_threshold: false
+          publish_only_summary: false
   post-comment:
     runs-on: ubuntu-latest
     needs: [frontend-tests, backend-tests]
