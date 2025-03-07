@@ -44,4 +44,4 @@ jobs:
         with:
           name: Angular Tests
           path: front/coverage/test-results.xml
-          reporter: jest-junit
+          reporter: java-junit
