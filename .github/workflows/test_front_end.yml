@@ -42,7 +42,7 @@ jobs:
           reporter: java-junit
 
       - name: Display test-report-frontend results
-        run: echo "${{ steps.test-report-frontend }}"
+        run: echo "${{ steps.test-report-frontend.outputs }}"
 
       # - name: Save Frontend Test Report Output
       #   run: echo "${{ steps.test-report-frontend.outputs.report }}" > frontend-test-report.md
@@ -67,7 +67,7 @@ jobs:
           thresholds: "60 80"
 
       - name: Display coverage-report-frontend results
-        run: echo "${{ steps.coverage-report-frontend }}"
+        run: echo "${{ steps.coverage-report-frontend.outputs }}"
 
       # - name: Save Frontend Coverage Output
       #   run: echo "${{ steps.coverage-report-frontend.outputs.markdown }}" > frontend-coverage.md
@@ -108,7 +108,7 @@ jobs:
           reporter: java-junit
 
       - name: Display test-report-backend results
-        run: echo "${{ steps.test-report-backend }}"
+        run: echo "${{ steps.test-report-backend.outputs }}"
 
       # - name: Save Backend Test Report Output
       #   run: echo "${{ steps.test-report-backend.outputs.report }}" > backend-test-report.md
@@ -133,7 +133,7 @@ jobs:
           publish_only_summary: false
 
       - name: Display coverage-report-backend results
-        run: echo "${{ steps.coverage-report-backend }}"
+        run: echo "${{ steps.coverage-report-backend.outputs }}"
 
       # - name: Save Backend Coverage Output
       #   run: echo "${{ steps.coverage-report-backend.outputs.markdown }}" > backend-coverage.md
