@@ -65,3 +65,37 @@ jobs:
         with:
           recreate: true
           path: code-coverage-results.md
+  backend-tests:
+    runs-on: ubuntu-latest
+    name: Backend Tests (Maven with Jacoco)
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v4
+        with:
+          java-version: "11"
+          distribution: "temurin"
+          cache: maven
+          
+      - name: Run tests with Maven
+        run: mvn -B test --file back/pom.xml
+
+      - name: Generate Jacoco test report
+        run: mvn jacoco:report --file back/pom.xml
+
+      - name: Upload backend test report
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-test-report
+          path: back/target/site/jacoco
+
+      - name: Test Report Backend
+        uses: phoenix-actions/test-reporting@v8
+        id: test-report-backend
+        if: success() || failure()
+        with:
+          name: Backend Tests
+          path: back/target/surefire-reports/*.xml
+          reporter: java-junit
