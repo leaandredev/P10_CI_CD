@@ -34,6 +34,9 @@ jobs:
       - name: Debug coverage directory
         run: ls -R front/coverage
 
+      - name: Display test-results.xml content
+        run: cat front/coverage/test-results.xml
+
       - name: Generate Test Report
         uses: phoenix-actions/test-reporting@v8
         id: test-report-frontend
