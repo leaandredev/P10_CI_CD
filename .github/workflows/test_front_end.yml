@@ -61,6 +61,14 @@ jobs:
           recreate: true
           path: code-coverage-results.md
 
+      - name: Add Test backend report URL in PR Comment
+        uses: marocchino/sticky-pull-request-comment@v2
+        if: github.event_name == 'pull_request'
+        with:
+          recreate: true
+          message: |
+            Frontend Test Report: ${{ steps.test-report-frontend.outputs.runHtmlUrl }}
+
   backend-tests:
     runs-on: ubuntu-latest
     name: Backend Tests (Maven with Jacoco)
@@ -102,6 +110,20 @@ jobs:
           minimum_coverage: 80
           fail_below_threshold: false
           publish_only_summary: false
+
+      - name: Upload Code Coverage Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: code-coverage-backend-report-markdown
+          path: */coverage-backend--results.md 
+          retention-days: 1 
+      
+      - name: Add Backend Coverage PR Comment
+        uses: marocchino/sticky-pull-request-comment@v2
+        if: github.event_name == 'pull_request'
+        with:
+          recreate: true
+          path: back/target/site/jacoco/coverage-backend-results.md
 
       - name: Add Test backend report URL in PR Comment
         uses: marocchino/sticky-pull-request-comment@v2
