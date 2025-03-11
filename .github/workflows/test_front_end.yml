@@ -38,10 +38,6 @@ jobs:
           path: front/coverage/test-results.xml
           reporter: java-junit
 
-      - name: Debug - Afficher les outputs de test report frontend
-        run: |
-          echo "Coverage Output: ${{ toJson(steps.test-report-frontend.outputs) }}"
-
       - name: Code Coverage Summary Report
         uses: irongut/CodeCoverageSummary@v1.3.0
         id: coverage-report-frontend
@@ -54,25 +50,28 @@ jobs:
           indicators: true
           output: both
           thresholds: "60 80"
-
-      - name: Debug - Afficher les outputs de coverage frontend
-        run: |
-          echo "Coverage Output: ${{ toJson(steps.coverage-report-frontend.outputs) }}"
-
-      # - name: Add Coverage PR Comment
-      #   uses: marocchino/sticky-pull-request-comment@v2
-      #   if: github.event_name == 'pull_request'
-      #   with:
-      #     recreate: true
-      #     path: code-coverage-results.md
+          
+      - name: Add Coverage PR Comment
+        uses: marocchino/sticky-pull-request-comment@v2
+        if: github.event_name == 'pull_request'
+        with:
+          recreate: true
+          path: code-coverage-results.md
 
       - name: Add Test backend report URL in PR Comment
         uses: marocchino/sticky-pull-request-comment@v2
         if: github.event_name == 'pull_request'
         with:
-          recreate: true
           message: |
-            Frontend Test Report: ${{ steps.test-report-frontend.outputs.runHtmlUrl }}
+            ### 🛠️ Frontend Test Report 📊
+
+            ${{ steps.test-report-frontend.outputs.conclusion == 'success' && '✅' || '❌' }} **Statut** : ${{ steps.test-report-frontend.outputs.conclusion }}  
+            ⏱️ **Temps d'exécution** : ${{ steps.test-report-frontend.outputs.time }} ms  
+            🟢 **Tests Passés** : ${{ steps.test-report-frontend.outputs.passed }}  
+            🔴 **Tests Échoués** : ${{ steps.test-report-frontend.outputs.failed }}  
+            ⚪ **Tests Ignorés** : ${{ steps.test-report-frontend.outputs.skipped }}  
+
+            📄 **[Voir le rapport détaillé]( ${{ steps.test-report-frontend.outputs.runHtmlUrl }} )
 
   backend-tests:
     runs-on: ubuntu-latest
@@ -103,10 +102,6 @@ jobs:
           path: back/target/surefire-reports/*.xml
           reporter: java-junit
 
-      - name: Debug - Afficher les outputs de test report backend
-        run: |
-          echo "Coverage Output: ${{ toJson(steps.test-report-backend.outputs) }}"
-
       - name: JaCoCo Code Coverage Report
         id: coverage-report-backend
         uses: PavanMudigonda/jacoco-reporter@v5.0
@@ -120,32 +115,29 @@ jobs:
           fail_below_threshold: false
           publish_only_summary: false
 
-      - name: Debug - Afficher les outputs de JaCoCo
-        run: |
-          echo "Coverage Output: ${{ toJson(steps.coverage-report-backend.outputs) }}"
+      - name: Add Backend Coverage PR Comment
+        uses: marocchino/sticky-pull-request-comment@v2
+        if: github.event_name == 'pull_request'
+        with:
+          message: |
+            ### Backend Coverage report 📊
 
-      # - name: Upload Code Coverage Artifacts
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: code-coverage-backend-report-markdown
-      #     path: back/target/site/jacoco/coverage-backend-results.md
-      #     retention-days: 1
-
-      # - name: List file in jacoco directory
-      #   run: |
-      #     ls -l back/target/site/jacoco
-
-      # - name: Add Backend Coverage PR Comment
-      #   uses: marocchino/sticky-pull-request-comment@v2
-      #   if: github.event_name == 'pull_request'
-      #   with:
-      #     recreate: true
-      #     path: back/target/site/jacoco/coverage-backend-results.md
+            **Coverage percentage** : ${{ steps.coverage-report-backend.outputs.coverage_percentage }} %
+            **Covered lines** : ${{ steps.coverage-report-backend.outputs.covered_lines }}
+            **Missed lines** : ${{ steps.coverage-report-backend.outputs.missed_lines }}
+            **Total lines** : ${{ steps.coverage-report-backend.outputs.total_lines }}
 
       - name: Add Test backend report URL in PR Comment
         uses: marocchino/sticky-pull-request-comment@v2
         if: github.event_name == 'pull_request'
         with:
-          recreate: true
           message: |
-            Backend Test Report: ${{ steps.test-report-backend.outputs.runHtmlUrl }}
+            ### 🛠️ Backend Test Report 📊
+
+            ${{ steps.test-report-backend.outputs.conclusion == 'success' && '✅' || '❌' }} **Statut** : ${{ steps.test-report-backend.outputs.conclusion }}  
+            ⏱️ **Temps d'exécution** : ${{ steps.test-report-backend.outputs.time }} ms  
+            🟢 **Tests Passés** : ${{ steps.test-report-backend.outputs.passed }}  
+            🔴 **Tests Échoués** : ${{ steps.test-report-backend.outputs.failed }}  
+            ⚪ **Tests Ignorés** : ${{ steps.test-report-backend.outputs.skipped }}  
+
+            📄 **[Voir le rapport détaillé]( ${{ steps.test-report-backend.outputs.runHtmlUrl }} )
