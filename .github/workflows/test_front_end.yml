@@ -62,6 +62,7 @@ jobs:
         uses: marocchino/sticky-pull-request-comment@v2
         if: github.event_name == 'pull_request'
         with:
+          header: frontend-test
           message: |
             ### 🛠️ Frontend Test Report 📊
 
@@ -119,6 +120,7 @@ jobs:
         uses: marocchino/sticky-pull-request-comment@v2
         if: github.event_name == 'pull_request'
         with:
+          header: backend-coverage
           message: |
             ### Backend Coverage report 📊
 
@@ -131,6 +133,7 @@ jobs:
         uses: marocchino/sticky-pull-request-comment@v2
         if: github.event_name == 'pull_request'
         with:
+          header: backend-test
           message: |
             ### 🛠️ Backend Test Report 📊
 
