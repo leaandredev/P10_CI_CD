@@ -109,7 +109,7 @@ jobs:
           publish_only_summary: false
 
       - name: Upload Code Coverage Artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: code-coverage-backend-report-markdown
           path: back/target/site/jacoco/coverage-backend-results.md
