@@ -41,19 +41,19 @@ jobs:
           path: front/coverage/test-results.xml
           reporter: java-junit
 
-      - name: Display test-report-frontend results
-        run: echo "${{ steps.test-report-frontend.outputs }}"
+      # - name: Display test-report-frontend results
+      #   run: echo "${{ steps.test-report-frontend.outputs }}"
 
-      - name: Display test-report-backend results
-        run: echo "${{ steps.test-report-frontend.outputs.output }}"
-      - name: Display test-report-backend results
-        run: echo "${{ steps.test-report-frontend.outputs.report }}"
-      - name: Display test-report-backend results
-        run: echo "${{ steps.test-report-frontend.outputs.conclusion }}"
-      - name: Display test-report-backend results
-        run: echo "${{ steps.test-report-frontend.outputs.markdown }}"
-      - name: Display test-report-backend results
-        run: echo "${{ steps.test-report-frontend.outputs.result }}"
+      # - name: Display test-report-backend results
+      #   run: echo "${{ steps.test-report-frontend.outputs.output }}"
+      # - name: Display test-report-backend results
+      #   run: echo "${{ steps.test-report-frontend.outputs.report }}"
+      # - name: Display test-report-backend results
+      #   run: echo "${{ steps.test-report-frontend.outputs.conclusion }}"
+      # - name: Display test-report-backend results
+      #   run: echo "${{ steps.test-report-frontend.outputs.markdown }}"
+      # - name: Display test-report-backend results
+      #   run: echo "${{ steps.test-report-frontend.outputs.result }}"
 
       # - name: Save Frontend Test Report Output
       #   run: echo "${{ steps.test-report-frontend.outputs.report }}" > frontend-test-report.md
@@ -77,19 +77,19 @@ jobs:
           output: both
           thresholds: "60 80"
 
-      - name: Display coverage-report-frontend results
-        run: echo "${{ steps.coverage-report-frontend.outputs }}"
+      # - name: Display coverage-report-frontend results
+      #   run: echo "${{ steps.coverage-report-frontend.outputs }}"
 
-      - name: Display test-report-backend results
-        run: echo "${{ steps.coverage-report-frontend.outputs.output }}"
-      - name: Display test-report-backend results
-        run: echo "${{ steps.coverage-report-frontend.outputs.report }}"
-      - name: Display test-report-backend results
-        run: echo "${{ steps.coverage-report-frontend.outputs.conclusion }}"
-      - name: Display test-report-backend results
-        run: echo "${{ steps.coverage-report-frontend.outputs.markdown }}"
-      - name: Display test-report-backend results
-        run: echo "${{ steps.coverage-report-frontend.outputs.result }}"
+      # - name: Display test-report-backend results
+      #   run: echo "${{ steps.coverage-report-frontend.outputs.output }}"
+      # - name: Display test-report-backend results
+      #   run: echo "${{ steps.coverage-report-frontend.outputs.report }}"
+      # - name: Display test-report-backend results
+      #   run: echo "${{ steps.coverage-report-frontend.outputs.conclusion }}"
+      # - name: Display test-report-backend results
+      #   run: echo "${{ steps.coverage-report-frontend.outputs.markdown }}"
+      # - name: Display test-report-backend results
+      #   run: echo "${{ steps.coverage-report-frontend.outputs.result }}"
 
       # - name: Save Frontend Coverage Output
       #   run: echo "${{ steps.coverage-report-frontend.outputs.markdown }}" > frontend-coverage.md
@@ -129,16 +129,16 @@ jobs:
           path: back/target/surefire-reports/*.xml
           reporter: java-junit
 
-      - name: Display test-report-backend results
-        run: echo "${{ steps.test-report-backend.outputs.output }}"
-      - name: Display test-report-backend results
-        run: echo "${{ steps.test-report-backend.outputs.report }}"
-      - name: Display test-report-backend results
-        run: echo "${{ steps.test-report-backend.outputs.conclusion }}"
-      - name: Display test-report-backend results
-        run: echo "${{ steps.test-report-backend.outputs.markdown }}"
-      - name: Display test-report-backend results
-        run: echo "${{ steps.test-report-backend.outputs.result }}"
+      # - name: Display test-report-backend results
+      #   run: echo "${{ steps.test-report-backend.outputs.output }}"
+      # - name: Display test-report-backend results
+      #   run: echo "${{ steps.test-report-backend.outputs.report }}"
+      # - name: Display test-report-backend results
+      #   run: echo "${{ steps.test-report-backend.outputs.conclusion }}"
+      # - name: Display test-report-backend results
+      #   run: echo "${{ steps.test-report-backend.outputs.markdown }}"
+      # - name: Display test-report-backend results
+      #   run: echo "${{ steps.test-report-backend.outputs.result }}"
 
       # - name: Save Backend Test Report Output
       #   run: echo "${{ steps.test-report-backend.outputs.report }}" > backend-test-report.md
@@ -162,19 +162,19 @@ jobs:
           fail_below_threshold: false
           publish_only_summary: false
 
-      - name: Display coverage-report-backend results
-        run: echo "${{ steps.coverage-report-backend.outputs }}"
+      # - name: Display coverage-report-backend results
+      #   run: echo "${{ steps.coverage-report-backend.outputs }}"
 
-      - name: Display test-report-backend results
-        run: echo "${{ steps.coverage-report-backend.outputs.output }}"
-      - name: Display test-report-backend results
-        run: echo "${{ steps.coverage-report-backend.outputs.report }}"
-      - name: Display test-report-backend results
-        run: echo "${{ steps.coverage-report-backend.outputs.conclusion }}"
-      - name: Display test-report-backend results
-        run: echo "${{ steps.coverage-report-backend.outputs.markdown }}"
-      - name: Display test-report-backend results
-        run: echo "${{ steps.coverage-report-backend.outputs.result }}"
+      # - name: Display test-report-backend results
+      #   run: echo "${{ steps.coverage-report-backend.outputs.output }}"
+      # - name: Display test-report-backend results
+      #   run: echo "${{ steps.coverage-report-backend.outputs.report }}"
+      # - name: Display test-report-backend results
+      #   run: echo "${{ steps.coverage-report-backend.outputs.conclusion }}"
+      # - name: Display test-report-backend results
+      #   run: echo "${{ steps.coverage-report-backend.outputs.markdown }}"
+      # - name: Display test-report-backend results
+      #   run: echo "${{ steps.coverage-report-backend.outputs.result }}"
 
       # - name: Save Backend Coverage Output
       #   run: echo "${{ steps.coverage-report-backend.outputs.markdown }}" > backend-coverage.md
