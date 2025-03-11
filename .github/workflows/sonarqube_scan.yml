@@ -40,6 +40,7 @@ jobs:
           -Dsonar.projectKey=leaandredev_P10_CI_CD \
           -Dsonar.qualitygate.wait=true \
           -Dsonar.branch.name=${{ github.head_ref || github.ref_name }}
+
   frontend-scan:
     name: Frontend analyze
     runs-on: ubuntu-latest
