@@ -59,12 +59,12 @@ jobs:
         run: |
           echo "Coverage Output: ${{ toJson(steps.coverage-report-frontend.outputs) }}"
 
-      - name: Add Coverage PR Comment
-        uses: marocchino/sticky-pull-request-comment@v2
-        if: github.event_name == 'pull_request'
-        with:
-          recreate: true
-          path: code-coverage-results.md
+      # - name: Add Coverage PR Comment
+      #   uses: marocchino/sticky-pull-request-comment@v2
+      #   if: github.event_name == 'pull_request'
+      #   with:
+      #     recreate: true
+      #     path: code-coverage-results.md
 
       - name: Add Test backend report URL in PR Comment
         uses: marocchino/sticky-pull-request-comment@v2
