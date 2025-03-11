@@ -38,6 +38,10 @@ jobs:
           path: front/coverage/test-results.xml
           reporter: java-junit
 
+      - name: Debug - Afficher les outputs de test report frontend
+        run: |
+          echo "Coverage Output: ${{ toJson(steps.test-report-frontend.outputs) }}"
+
       - name: Code Coverage Summary Report
         uses: irongut/CodeCoverageSummary@v1.3.0
         id: coverage-report-frontend
@@ -50,6 +54,10 @@ jobs:
           indicators: true
           output: both
           thresholds: "60 80"
+
+      - name: Debug - Afficher les outputs de coverage frontend
+        run: |
+          echo "Coverage Output: ${{ toJson(steps.coverage-report-frontend.outputs) }}"
 
       - name: Add Coverage PR Comment
         uses: marocchino/sticky-pull-request-comment@v2
@@ -94,6 +102,10 @@ jobs:
           name: Backend Tests
           path: back/target/surefire-reports/*.xml
           reporter: java-junit
+
+      - name: Debug - Afficher les outputs de test report backend
+        run: |
+          echo "Coverage Output: ${{ toJson(steps.test-report-backend.outputs) }}"
 
       - name: JaCoCo Code Coverage Report
         id: coverage-report-backend
