@@ -35,8 +35,11 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
           cd back
-          mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=leaandredev_P10_CI_CD -Dsonar.qualitygate.wait=true \
-            -Dsonar.branch.name=${{ github.head_ref || github.ref_name }}
+          mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
+          -Dsonar.organization=leaandredev \
+          -Dsonar.projectKey=leaandredev_P10_CI_CD \
+          -Dsonar.qualitygate.wait=true \
+          -Dsonar.branch.name=${{ github.head_ref || github.ref_name }}
   frontend-scan:
     name: Frontend analyze
     runs-on: ubuntu-latest
@@ -62,5 +65,7 @@ jobs:
         with:
           projectBaseDir: front
           args: >
+            -Dsonar.organization=leaandredev \
+            -Dsonar.projectKey=leaandredev_P10_CI_CD \
             -Dsonar.qualitygate.wait=true \
             -Dsonar.branch.name=${{ github.head_ref || github.ref_name }}
