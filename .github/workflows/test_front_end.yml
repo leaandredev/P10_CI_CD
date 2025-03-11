@@ -112,23 +112,23 @@ jobs:
         run: |
           echo "Coverage Output: ${{ toJson(steps.coverage-report-backend.outputs) }}"
 
-      - name: Upload Code Coverage Artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: code-coverage-backend-report-markdown
-          path: back/target/site/jacoco/coverage-backend-results.md
-          retention-days: 1
+      # - name: Upload Code Coverage Artifacts
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: code-coverage-backend-report-markdown
+      #     path: back/target/site/jacoco/coverage-backend-results.md
+      #     retention-days: 1
 
-      - name: List file in jacoco directory
-        run: |
-          ls -l back/target/site/jacoco
+      # - name: List file in jacoco directory
+      #   run: |
+      #     ls -l back/target/site/jacoco
 
-      - name: Add Backend Coverage PR Comment
-        uses: marocchino/sticky-pull-request-comment@v2
-        if: github.event_name == 'pull_request'
-        with:
-          recreate: true
-          path: back/target/site/jacoco/coverage-backend-results.md
+      # - name: Add Backend Coverage PR Comment
+      #   uses: marocchino/sticky-pull-request-comment@v2
+      #   if: github.event_name == 'pull_request'
+      #   with:
+      #     recreate: true
+      #     path: back/target/site/jacoco/coverage-backend-results.md
 
       - name: Add Test backend report URL in PR Comment
         uses: marocchino/sticky-pull-request-comment@v2
