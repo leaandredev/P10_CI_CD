@@ -55,6 +55,7 @@ jobs:
         uses: marocchino/sticky-pull-request-comment@v2
         if: github.event_name == 'pull_request'
         with:
+          header: frontend-coverage
           path: code-coverage-results.md
 
       - name: Add Test backend report URL in PR Comment
@@ -114,6 +115,18 @@ jobs:
           fail_below_threshold: false
           publish_only_summary: false
 
+      - name: Add Backend Coverage PR Comment
+        uses: marocchino/sticky-pull-request-comment@v2
+        if: github.event_name == 'pull_request'
+        with:
+          message: |
+            ### Backend Coverage report 📊
+
+            **Coverage percentage** : ${{ steps.coverage-report-backend.outputs.coverage_percentage }} %
+            **Covered lines** : ${{ steps.coverage-report-backend.outputs.covered_lines }}
+            **Missed lines** : ${{ steps.coverage-report-backend.outputs.missed_lines }}
+            **Total lines** : ${{ steps.coverage-report-backend.outputs.total_lines }}
+
       - name: Add Test backend report URL in PR Comment
         uses: marocchino/sticky-pull-request-comment@v2
         if: github.event_name == 'pull_request'
@@ -128,10 +141,3 @@ jobs:
             ⚪ **Tests Ignorés** : ${{ steps.test-report-backend.outputs.skipped }}  
 
             📄 **[Voir le rapport détaillé]( ${{ steps.test-report-backend.outputs.runHtmlUrl }} )
-
-            ### Backend Coverage report 📊
-
-            **Coverage percentage** : ${{ steps.coverage-report-backend.outputs.coverage_percentage }} %
-            **Covered lines** : ${{ steps.coverage-report-backend.outputs.covered_lines }}
-            **Missed lines** : ${{ steps.coverage-report-backend.outputs.missed_lines }}
-            **Total lines** : ${{ steps.coverage-report-backend.outputs.total_lines }}
