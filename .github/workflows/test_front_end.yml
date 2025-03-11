@@ -1,4 +1,4 @@
-name: Backend and Frontend Tests
+name: Project Tests and coverage
 
 on:
   push:
@@ -9,7 +9,7 @@ on:
 jobs:
   frontend-tests:
     runs-on: ubuntu-latest
-    name: Frontend Tests (Angular with Jasmine/Karma)
+    name: Frontend Tests and Coverage
 
     steps:
       - uses: actions/checkout@v4
@@ -76,7 +76,7 @@ jobs:
 
   backend-tests:
     runs-on: ubuntu-latest
-    name: Backend Tests (Maven with Jacoco)
+    name: Backend Tests and Coverage
 
     steps:
       - uses: actions/checkout@v4
