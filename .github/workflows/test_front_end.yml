@@ -108,6 +108,10 @@ jobs:
           fail_below_threshold: false
           publish_only_summary: false
 
+      - name: Debug - Afficher les outputs de JaCoCo
+        run: |
+          echo "Coverage Output: ${{ toJson(steps.coverage-report-backend.outputs) }}"
+
       - name: Upload Code Coverage Artifacts
         uses: actions/upload-artifact@v4
         with:
