@@ -64,7 +64,3 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           projectBaseDir: front
-          args: >
-            -Dsonar.organization=leaandredev \
-            -Dsonar.projectKey=leaandredev_P10_CI_CD \
-            -Dsonar.qualitygate.wait=true \
