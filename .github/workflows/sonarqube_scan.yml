@@ -38,8 +38,9 @@ jobs:
           cd back
           mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
           -Dsonar.organization=leaandredev \
-          -Dsonar.projectKey=leaandredev_P10_CI_CD \
+          -Dsonar.projectKey=leaandredev_bobapp-back \
           -Dsonar.qualitygate.wait=true \
+          -Dsonar.sources=src/main/java
 
   frontend-scan:
     name: Frontend analyze
