@@ -8,24 +8,25 @@ on:
 
 jobs:
   frontend-tests:
-    runs-on: ubuntu-latest
     name: Frontend Tests and Coverage
+    runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout the repository code
+        uses: actions/checkout@v4
 
-      - name: Setup Node.js 18
+      - name: Setup Node.js 18 with caching
         uses: actions/setup-node@v4
         with:
           node-version: 18
           cache: "npm"
           cache-dependency-path: front/package-lock.json
 
-      - name: Install dependencies
+      - name: Install project dependencies
         run: npm ci
         working-directory: front
 
-      - name: Run Angular Tests (Jasmine/Karma)
+      - name: Run Angular Tests with coverage (Jasmine/Karma)
         run: npm run test-coverage
         working-directory: front
 
@@ -51,7 +52,7 @@ jobs:
           output: both
           thresholds: "60 80"
 
-      - name: Add Coverage PR Comment
+      - name: Add Coverage in PR comments
         uses: marocchino/sticky-pull-request-comment@v2
         if: github.event_name == 'pull_request'
         with:
@@ -59,7 +60,7 @@ jobs:
           recreate: true
           path: code-coverage-results.md
 
-      - name: Add Test backend report URL in PR Comment
+      - name: Add frontend tests result in PR comments
         uses: marocchino/sticky-pull-request-comment@v2
         if: github.event_name == 'pull_request'
         with:
@@ -77,26 +78,27 @@ jobs:
             📄 **[Voir le rapport détaillé]( ${{ steps.test-report-frontend.outputs.runHtmlUrl }} )
 
   backend-tests:
-    runs-on: ubuntu-latest
     name: Backend Tests and Coverage
+    runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout the repository code
+        uses: actions/checkout@v4
 
-      - name: Set up JDK 11
+      - name: Set up JDK 11 witch caching
         uses: actions/setup-java@v4
         with:
           java-version: "11"
           distribution: "temurin"
           cache: maven
 
-      - name: Run tests with Maven
+      - name: Run backend tests with Maven
         run: mvn -B test --file back/pom.xml
 
       - name: Generate Jacoco test report
         run: mvn jacoco:report --file back/pom.xml
 
-      - name: Test Report Backend
+      - name: Generate backend test report
         uses: phoenix-actions/test-reporting@v8
         id: test-report-backend
         if: success() || failure()
@@ -118,7 +120,7 @@ jobs:
           fail_below_threshold: false
           publish_only_summary: false
 
-      - name: Add Backend Coverage PR Comment
+      - name: Add Backend Coverage in PR comments
         uses: marocchino/sticky-pull-request-comment@v2
         if: github.event_name == 'pull_request'
         with:
@@ -132,7 +134,7 @@ jobs:
             **Missed lines** : ${{ steps.coverage-report-backend.outputs.missed_lines }}
             **Total lines** : ${{ steps.coverage-report-backend.outputs.total_lines }}
 
-      - name: Add Test backend report URL in PR Comment
+      - name: Add backend tests report in PR comments
         uses: marocchino/sticky-pull-request-comment@v2
         if: github.event_name == 'pull_request'
         with:
